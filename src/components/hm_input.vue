@@ -31,21 +31,20 @@ export default {
   methods: {
     // input 事件 -- 输入框一变化就触发的事件
     handlerInput(e) {
-      this.pn = "class";
       // 拿到输入框的值
       let value = e.target.value;
       // 校验用户输入是否合法
       // 判断是否传递了规则
       if (this.rules) {
+        this.pn = "class";
         // 进行用户数据的校验
         if (this.rules.test(value)) {
           // 校验合法
-          console.log("OK");
           this.flag = true;
         } else {
           // 校验不合法
-          console.log("NO OK");
           this.flag = false;
+          this.$toast.fail(this.msg);
         }
       }
       // 子传父
@@ -60,7 +59,7 @@ export default {
       if (this.rules) {
         // 进行用户数据校验
         if (!this.rules.test(value)) {
-          console.log(this.msg);
+          this.$toast.fail(this.msg);
         }
       }
     },

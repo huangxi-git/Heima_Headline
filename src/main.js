@@ -6,6 +6,12 @@ import './styles/reset.less'
 // 引入路由模块
 import router from './router/index';
 
+// 引入 vant 中的组件
+import { Toast } from 'vant';
+// 将组件挂载到全局，这样在每个组件中可以通过this 进行使用
+Vue.use(Toast);
+
+
 
 
 

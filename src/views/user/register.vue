@@ -1,82 +1,84 @@
 <template>
-  <div id="app">
-    <div class="container">
-      <div class="close"><span class="iconfont iconicon-test"></span></div>
-      <div class="logo"><span class="iconfont iconnew"></span></div>
-
-      <!-- 给 子组件的 input 赋值 -->
+  <div class="container">
+    <div class="close"><span class="iconfont iconicon-test"></span></div>
+    <div class="logo"><span class="iconfont iconnew"></span></div>
+    <div class="inputs">
       <hm_input
-        v-model="user.username"
         placeholder="请输入账号"
         :rules="/^1[35789]\d{9}$/"
+        v-model.trim="user.username"
         msg="请输入11位手机号码"
       ></hm_input>
       <hm_input
-        v-model="user.password"
+        placeholder="请输入昵称"
+        v-model.trim="user.nickname"
+      ></hm_input>
+      <hm_input
         placeholder="请输入密码"
         :rules="/^.{3,16}$/"
+        v-model.trim="user.password"
         msg="请输入3~16位的密码"
       ></hm_input>
-      <!-- <hm_input :data="user.username" @getvalue="getv"></hm_input> -->
-
-      <p class="tips">
-        没有账号？
-        <a href="#/register" class="">去注册</a>
-      </p>
-      <!-- 接收子组件 --><!-- 给子组件传值 -->
-      <hm_button @click="login" type="success">登录</hm_button>
     </div>
+    <p class="tips">
+      有账号？
+      <a href="#/login" class="">去登录</a>
+    </p>
+    <hm_button type="success" @click="register">注册</hm_button>
   </div>
 </template>
 
 <script>
-// 引入 组件
-// 封装的按钮
-import hm_button from "../../components/heima_button";
-// 封装的输入框
+// 引入子组件
 import hm_input from "../../components/hm_input";
-// 引入 请求
-import { userLogin } from "../../apis/user";
+import hm_button from "../../components/heima_button";
+// 引入请求
+import { userRegister } from "../../apis/user";
 
 export default {
   data() {
     return {
-      // 用户输入框
       user: {
         username: "19123456789",
         password: "zxcvbnm",
+        nickname: "axi",
       },
     };
   },
   // 注册组件
   components: {
-    hm_button,
     hm_input,
+    hm_button,
   },
-  // 事件处理函数
   methods: {
-    // 登录按钮 -- 子组件传 e 过来
-    login(e) {
-      // console.log(44444, e);
-      // console.log(this.user);
+    register() {
+      // 判断用户输入是否合法
       // 用户手机号验证
       let usern = /^1[35789]\d{9}$|^admin$/.test(this.user.username);
       // 密码验证
       let pwd = /^.{3,16}$/.test(this.user.password);
-      // 判断用户输入是否正确
-      if (usern && pwd) {
-        // 记得传参
-        userLogin(this.user)
+      // 用户输入校验
+      if (usern && pwd && this.user.nickname.length > 0) {
+        // console.log(this.user);
+        userRegister(this.user)
           .then((res) => {
-            this.$toast.success("登录成功！");
+            // console.log(res);
+            if (res.data.statusCode == 400) {
+              // 用户名已存在
+              this.$toast(res.data.message);
+              return;
+            } else {
+              // 注册成功后跳转页面;
+              this.$router.push({ path: "/login" });
+            }
           })
+          // 飘红错误
           .catch((err) => {
-            this.$toast.fail("登录失败！");
+            this.$toast(err);
           });
       } else {
-        // console.log("输入格式校验失败！");
         this.$toast({
-          message: "手机号或密码输入不合法！",
+          message: "手机号或密码或昵称输入不合法!",
           position: "center",
           duration: 1000,
         });
@@ -90,11 +92,13 @@ export default {
 .container {
   padding: 20px;
 }
+
 .close {
   span {
     font-size: 27 / 360 * 100vw;
   }
 }
+
 .logo {
   display: flex;
   justify-content: center;
@@ -105,14 +109,17 @@ export default {
     color: #d81e06;
   }
 }
+
 .inputs {
   input {
     margin-bottom: 20px;
   }
 }
+
 .tips {
   text-align: right;
   margin-bottom: 20px;
+
   a {
     color: #3385ff;
   }

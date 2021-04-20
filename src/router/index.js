@@ -14,6 +14,12 @@ const router = new VueRouter({
             path: '/login',
             component: () => import('../views/user/login.vue'),
         },
+        //注册路由
+        {
+            name: 'register',
+            path: '/register',
+            component: () => import('../views/user/register.vue'),
+        },
 
     ],
 });
