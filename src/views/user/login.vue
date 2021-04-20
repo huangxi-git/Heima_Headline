@@ -3,24 +3,27 @@
     <div class="container">
       <div class="close"><span class="iconfont iconicon-test"></span></div>
       <div class="logo"><span class="iconfont iconnew"></span></div>
-      <div class="inputs">
-        <input
-          placeholder="请输入手机号"
-          class="input"
-          v-model="user.username"
-        />
-        <input
-          placeholder="密码"
-          class="input"
-          type="password"
-          v-model="user.password"
-        />
-      </div>
+
+      <!-- 给 子组件的 input 赋值 -->
+      <hm_input
+        v-model="user.username"
+        placeholder="请输入账号"
+        :rules="/^1[35789]\d{9}$/"
+        msg="请输入11位手机号码"
+      ></hm_input>
+      <hm_input
+        v-model="user.password"
+        placeholder="请输入密码"
+        :rules="/^.{3,16}$/"
+        msg="请输入3~16位的密码"
+      ></hm_input>
+      <!-- <hm_input :data="user.username" @getvalue="getv"></hm_input> -->
+
       <p class="tips">
         没有账号？
         <a href="#/register" class="">去注册</a>
       </p>
-      <!-- 接收子组件 -->
+      <!-- 接收子组件 --><!-- 给子组件传值 -->
       <hm_button @click="login" type="success">登录</hm_button>
     </div>
   </div>
@@ -28,11 +31,15 @@
 
 <script>
 // 引入 组件
+// 封装的按钮
 import hm_button from "../../components/heima_button";
+// 封装的输入框
+import hm_input from "../../components/hm_input";
 
 export default {
   data() {
     return {
+      // 用户输入框
       user: {
         username: "",
         password: "",
@@ -42,11 +49,14 @@ export default {
   // 注册组件
   components: {
     hm_button,
+    hm_input,
   },
+  // 事件处理函数
   methods: {
-    // 子组件传 e 过来
+    // 登录按钮 -- 子组件传 e 过来
     login(e) {
-      console.log(44444, e);
+      // console.log(44444, e);
+      // console.log(this.user);
     },
   },
 };

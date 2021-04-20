@@ -14,6 +14,7 @@
 
 <script>
 export default {
+  // 事件处理函数
   methods: {
     // 点击登录按钮
     handlerClick(e) {
@@ -22,9 +23,14 @@ export default {
       this.$emit("click", e);
     },
   },
+  // 接收父组件传的值
   props: {
+    // 按钮样式
     type: {
+      // 数据类型
       type: String,
+      // 必传
+      required: true,
     },
   },
 };
