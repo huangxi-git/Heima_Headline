@@ -14,6 +14,7 @@ export default {
   props: {
     rules: {
       // 定义数据校验规则
+      // 正则表达式
       type: RegExp,
     },
     msg: {
@@ -57,7 +58,7 @@ export default {
       let value = e.target.value;
       // 判断是否传递了规则
       if (this.rules) {
-        // 进行用户数据校验
+        // 进行用户数据校验 -- 校验不通过
         if (!this.rules.test(value)) {
           this.$toast.fail(this.msg);
         }

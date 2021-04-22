@@ -4,6 +4,13 @@
       <div class="close"><span class="iconfont iconicon-test"></span></div>
       <div class="logo"><span class="iconfont iconnew"></span></div>
 
+      <!-- :data='user.username'：父传子：数据影响元素 -->
+      <!-- @getvalue='getv'：子传父：元素影响数据 -->
+      <!-- <hm_input :data="user.username" @getvalue="getv"></hm_input> -->
+      <!-- v-model:双向数据绑定：数据影响元素 + 元素影响数据
+        1.为子组件的value属性赋值
+        2.监听子组件所发出的input事件 -->
+      <!-- 为子组件赋值优先赋值给子组件的props属性，如果没有props属性，那么就会添加到组件的根元素 -->
       <!-- 给 子组件的 input 赋值 -->
       <hm_input
         v-model="user.username"
@@ -17,7 +24,6 @@
         :rules="/^.{3,16}$/"
         msg="请输入3~16位的密码"
       ></hm_input>
-      <!-- <hm_input :data="user.username" @getvalue="getv"></hm_input> -->
 
       <p class="tips">
         没有账号？
@@ -68,9 +74,18 @@ export default {
         // 记得传参
         userLogin(this.user)
           .then((res) => {
+            // console.log(res);
+            // 保存token到本地
+            localStorage.setItem(
+              "heimatoutiao_loginToken",
+              res.data.data.token
+            );
             this.$toast.success("登录成功！");
+            // 登录成功后跳转页面
+            this.$router.push({ path: `/personal/${res.data.data.user.id}` });
           })
           .catch((err) => {
+            // console.log(err);
             this.$toast.fail("登录失败！");
           });
       } else {

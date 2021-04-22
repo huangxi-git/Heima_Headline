@@ -8,6 +8,7 @@
       primary: type == 'primary',
     }"
   >
+    <!-- 使用匿名插槽方便用户自定义内容 -->
     <slot></slot>
   </div>
 </template>
@@ -19,6 +20,8 @@ export default {
     // 点击登录按钮
     handlerClick(e) {
       // console.log(33333);
+      // 当用户单击按钮的时候是子组件进行响应的，那么我们需要告诉父组件需要进行单击响应处理：子传父
+      // 父组件监听子组件所发出事件的时候，优先以子组件发出的事件为准
       // 传给父组件
       this.$emit("click", e);
     },

@@ -20,3 +20,22 @@ export const userRegister = (value) => {
         data: value,
     })
 }
+
+// 根据用户 id 获取用户详情  --  /user/:id
+export const getUserDetail = (id) => {
+    return axios({
+        // 传 id 方法 -- 拼接
+        url: `/user/${id}`,
+        // 传递 自定义的请求头，我们在
+        // headers: { Authorization: localStorage.getItem('heimatoutiao_loginToken') },
+    })
+}
+
+
+export const updateUserInfo = (id, data) => {
+    return axios({
+        method: 'post',
+        url: `/user_update/${id}`,
+        data,
+    })
+}
