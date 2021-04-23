@@ -10,6 +10,11 @@ import { Toast } from 'vant'
 const router = new VueRouter({
     // 配置路由
     routes: [
+        // 重定向
+        {
+            path: '/',
+            redirect: { name: 'index' },
+        },
         // 登录路由
         {
             name: 'login',
@@ -33,6 +38,12 @@ const router = new VueRouter({
             name: 'edit_profile',
             path: '/edit_profile/:id',
             component: () => import('../views/user/edit_profile.vue'),
+        },
+        // 首页
+        {
+            name: 'index',
+            path: '/index',
+            component: () => import('../views/index.vue'),
         },
     ],
 });
