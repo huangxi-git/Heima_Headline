@@ -7,11 +7,30 @@ import './styles/reset.less'
 import router from './router/index';
 
 // 引入 vant 中的组件
-import { Toast, Icon, Uploader, Dialog, Field, ActionSheet, Tab, Tabs } from 'vant';
+import {
+  Toast,
+  Icon,
+  Uploader,
+  Dialog,
+  Field,
+  ActionSheet,
+  Tab,
+  Tabs,
+  List,
+  PullRefresh,
+} from 'vant';
+
 // 将组件挂载到全局，这样在每个组件中可以通过this 进行使用
-Vue.use(Toast).use(Icon).use(Uploader).use(Dialog).use(Field).use(ActionSheet).use(Tab).use(Tabs);
-
-
+Vue.use(Toast)
+  .use(Icon)
+  .use(Uploader)
+  .use(Dialog)
+  .use(Field)
+  .use(ActionSheet)
+  .use(Tab)
+  .use(Tabs)
+  .use(List)
+  .use(PullRefresh);
 
 
 

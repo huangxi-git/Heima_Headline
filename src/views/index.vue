@@ -20,13 +20,31 @@
     4.active：默认显示的页 -->
     <van-tabs v-model="active" sticky swipeable>
       <van-tab :title="value.name" v-for="value in cateList" :key="value.id">
-        <!-- 使用子组件并传值 -->
-        <hmPostBlock
-          v-for="item in value.postlist"
-          :key="item.id"
-          :post="item"
-        ></hmPostBlock
-      ></van-tab>
+        <!-- 上拉刷新 -->
+        <van-list
+          v-model="value.loading"
+          :finished="value.finished"
+          finished-text="没有更多了"
+          @load="onLoad"
+          :offset="5"
+          :immediate-check="false"
+        >
+          <!-- 下拉刷新 -->
+          <van-pull-refresh
+            v-model="value.isLoading"
+            success-text="刷新成功"
+            @refresh="onRefresh"
+          >
+            <!-- 内容 -->
+            <!-- 使用子组件并传值 -->
+            <hmPostBlock
+              v-for="item in value.postlist"
+              :key="item.id"
+              :post="item"
+            ></hmPostBlock>
+          </van-pull-refresh>
+        </van-list>
+      </van-tab>
     </van-tabs>
   </div>
 </template>
@@ -57,13 +75,23 @@ export default {
     // console.log(res.data);
     this.cateList = res.data.data;
     this.$toast("栏目渲染成功");
+
+    // 数据改造 -- 重点 -- 为每个栏目加 postlist、pageIndex、pageSize
+    this.cateList = this.cateList.map((v) => {
+      // console.log(v);
+      return {
+        ...v,
+        postlist: [],
+        pageIndex: 1, // 当前栏目的当前页码
+        pageSize: 6, // 当前栏目每页显示的数量
+        loading: false, // 当前组件的上拉加载状态
+        finished: false, // 当前组件的数据是否全部加载完毕的标记
+        isLoading: false, // 当前组件下拉刷新
+      };
+    });
+
     // 获取栏目被激活的数据 -- 页面加载
     this.getPost();
-
-    // 数据改造 -- 重点
-    this.cateList = this.cateList.map((v) => {
-      return { ...v, postlist: [] };
-    });
     // console.log(this.cateList);
   },
   // 监听
@@ -72,6 +100,7 @@ export default {
     async active() {
       // 索引
       // console.log(this.active);
+      // this.getPost();
 
       // 数据改造
       if (this.cateList[this.active].postlist.length == 0) {
@@ -86,9 +115,57 @@ export default {
       let id = this.cateList[this.active].id;
       // console.log(id);
 
-      // 数据改造 -- 将数据存储在当前栏目对象的postlist数组中
-      this.cateList[this.active].postlist = (await getPostList(id)).data.data;
-      // console.log(this.postlist);
+      // let res = await getPostList(this.cateList[this.active].id);
+      // // console.log(res);
+      // this.postlist = res.data.data;
+
+      let current = (
+        await getPostList({
+          // 传参 -- 对象形式
+          category: this.cateList[this.active].id,
+          pageSize: this.cateList[this.active].pageSize,
+          pageIndex: this.cateList[this.active].pageIndex,
+        })
+      ).data.data;
+      // console.log(current);
+
+      // 数据改造 -- 将数据存储在当前栏目对象的 postlist 数组中
+      this.cateList[this.active].postlist.push(...current);
+
+      // 本次请求完成后，将 loading 重置为 false ，以便下次上拉
+      this.cateList[this.active].loading = false;
+
+      // 判断数据是否已全部加载完毕：我要求6条数据，结果返回的数量小于6，说明真没有数据了
+      if (current.length < this.cateList[this.active].pageSize) {
+        this.cateList[this.active].finished = true;
+      }
+
+      // 本次请求完成后，将 isloading 重置为 false ，以便下次下拉刷新
+      this.cateList[this.active].isLoading = false;
+    },
+
+    // 上拉加载下一页数据
+    onLoad() {
+      // 加载下一页数据，就是将当前栏目的页码 +1 ，然后重新发送请求
+      this.cateList[this.active].pageIndex++;
+      // setTimeout(() => {
+      this.getPost();
+      // }, 1000);
+    },
+
+    // 下拉刷新
+    onRefresh() {
+      // 下拉刷新后要做什么
+      // 页码回到  1
+      this.cateList[this.active].pageIndex = 1;
+      // 清空数据
+      this.cateList[this.active].postlist.length = 0;
+      // 将之前可能重置为true的finished状态重置为false
+      this.cateList[this.active].finished = false;
+      // 重新获取数据;
+      // setTimeout(() => {
+      this.getPost();
+      // }, 1000);
     },
   },
 };

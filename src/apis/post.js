@@ -1,9 +1,10 @@
 // 引入配置好的 axios
 import axios from '../utils/request'
 
-export const getPostList = (data) => {
+export const getPostList = (params) => {
     return axios({
-        url: `/post?category=${data}&pageSize=40`,
-
+        url: '/post',
+        // get 请求 -- 形参用 params 
+        params,
     })
 }
