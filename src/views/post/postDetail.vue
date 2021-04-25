@@ -5,17 +5,31 @@
         <van-icon name="arrow-left back" @click="$router.back()" />
         <span class="iconfont iconnew new"></span>
       </div>
-      <span>关注</span>
+      <span @click="followUserById" :class="{ active: post.has_follow }">{{
+        post.has_follow == false ? "关注" : "已关注"
+      }}</span>
     </div>
     <div class="detail">
-      <div class="title">标题</div>
+      <div class="title">{{ post.title }}</div>
       <div class="desc">
-        <span>火星人</span> &nbsp;&nbsp;
-        <span>2019-9-9</span>
+        <span>{{ post.user.nickname }}</span> &nbsp;&nbsp;
+        <span>{{ Dates }}</span>
       </div>
-      <div class="content">文章的内容：</div>
+      <!-- 显示文章 -->
+      <div class="content" v-html="post.content" v-if="post.type == 1"></div>
+      <!-- 显示视频 -->
+      <video
+        :src="post.content"
+        poster="http://pic1.win4000.com/wallpaper/2017-11-17/5a0e7021912fc.jpg"
+        controls
+        v-else
+      ></video>
       <div class="opt">
-        <span class="like"> <van-icon name="good-job-o" />点赞 </span>
+        <span class="like" :class="{ likeClass: post.has_like }">
+          <van-icon name="good-job-o" @click="like" />{{
+            post.has_like ? post.like_length : "点赞"
+          }}
+        </span>
         <span class="chat"> <van-icon name="chat" class="w" />微信 </span>
       </div>
     </div>
@@ -35,14 +49,96 @@
       </div>
       <div class="more">更多跟帖</div>
     </div>
+    <!-- 底部 -->
+    <!-- 传文章 id  -->
+    <hmCommentFooter :post="post"></hmCommentFooter>
   </div>
 </template>
 
 <script>
-export default {};
+// 引入 请求
+import { getPostDetail, likePost } from "../../apis/post";
+// 引入请求
+import { followUser, unFollowUser } from "../../apis/user";
+// 引入组件
+import hmCommentFooter from "../../components/hm_commentFooter";
+
+export default {
+  components: {
+    hmCommentFooter,
+  },
+  data() {
+    return {
+      // 保存文章数据的对象
+      post: {
+        user: {},
+      },
+      // 时间
+      Dates: "",
+    };
+  },
+  methods: {
+    // 关注和取消关注
+    async followUserById() {
+      // console.log(6666);
+      // 拿到 作者 id
+      let userId = this.post.user.id;
+      let res;
+      // 判断是否已经关注 -- 已关注
+      if (this.post.has_follow == true) {
+        res = await unFollowUser(userId);
+      } else {
+        // 未关注
+        res = await followUser(userId);
+      }
+      // console.log(res);
+      // console.log(this.post);
+      this.$toast(res.data.message);
+      // 修改 has_follow 的值
+      this.post.has_follow = !this.post.has_follow;
+    },
+
+    // 点赞
+    async like() {
+      // 拿到文章 id
+      // 发送请求
+      let res = await likePost(this.post.id);
+      console.log(this.post);
+      console.log(res);
+
+      if (res.data.message == "点赞成功") {
+        ++this.post.like_length;
+      } else {
+        --this.post.like_length;
+      }
+      // 修改 has_like 的值
+      this.post.has_like = !this.post.has_like;
+      this.$toast(res.data.message);
+    },
+  },
+  async mounted() {
+    // 当前时间
+    let date = new Date();
+    let y = date.getFullYear();
+    let m = date.getMonth() + 1;
+    let d = date.getDate();
+    // console.log(`${y} - ${m} -${d}`);
+    this.Dates = `${y} - ${m} -${d}`;
+
+    // 发送请求
+    // console.log(this.$route.params.id);
+    let res = await getPostDetail(this.$route.params.id);
+    // console.log(res);
+    this.post = res.data.data;
+    // console.log(this.post);
+  },
+};
 </script>
 
 <style lang="less" scoped>
+.articaldetail {
+  padding-bottom: 60px;
+}
 .header {
   padding: 0px 10px;
   height: 50px;
@@ -71,6 +167,11 @@ export default {};
     text-align: center;
     border-radius: 15px;
     font-size: 13px;
+    &.active {
+      background-color: transparent;
+      border: 2px solid rgba(0, 0, 0, 0.425);
+      color: rgba(0, 0, 0, 0.425);
+    }
   }
 }
 .detail {
@@ -86,11 +187,22 @@ export default {};
     font-size: 13px;
   }
   .content {
-    text-indent: 2em;
+    // 深度作用选择器
+    /deep/ p {
+      text-indent: 2em;
+    }
     line-height: 24px;
     font-size: 15px;
     padding-bottom: 30px;
     width: 100%;
+    // 深度作用选择器
+    /deep/ img {
+      width: 100%;
+    }
+  }
+  video {
+    width: 100%;
+    margin-bottom: 10px;
   }
 }
 .opt {
@@ -108,6 +220,9 @@ export default {};
   }
   .w {
     color: rgb(84, 163, 5);
+  }
+  .likeClass {
+    color: tomato;
   }
 }
 .keeps {

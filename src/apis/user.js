@@ -39,3 +39,17 @@ export const updateUserInfo = (id, data) => {
         data,
     })
 }
+
+// 关注用户
+export const followUser = (id) => {
+    return axios({
+        url: `/user_follows/${id}`
+    })
+}
+
+// 取消关注用户
+export const unFollowUser = (id) => {
+    return axios({
+        url: `/user_unfollow/${id}`
+    })
+}
