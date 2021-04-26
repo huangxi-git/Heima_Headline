@@ -10,7 +10,7 @@
         <span>搜索商品</span>
       </div>
       <div class="user">
-        <van-icon name="manager-o" />
+        <van-icon name="manager-o" @click="jump" />
       </div>
     </div>
     <!-- tab标签页
@@ -83,7 +83,7 @@ export default {
         ...v,
         postlist: [],
         pageIndex: 1, // 当前栏目的当前页码
-        pageSize: 6, // 当前栏目每页显示的数量
+        pageSize: 25, // 当前栏目每页显示的数量
         loading: false, // 当前组件的上拉加载状态
         finished: false, // 当前组件的数据是否全部加载完毕的标记
         isLoading: false, // 当前组件下拉刷新
@@ -109,6 +109,18 @@ export default {
     },
   },
   methods: {
+    // 点击个人中心
+    jump() {
+      // 本地拿到 id
+      let bendiId = localStorage.getItem("heimatoutiao_loginId");
+      // 判断是有 id
+      if (bendiId) {
+        this.$router.push({ path: `/personal/${bendiId}` });
+      } else {
+        // this.$router.push({ path: `/login` });
+        window.location.href = "#/login?redirect_url=" + window.location.href;
+      }
+    },
     // 封装函数
     async getPost() {
       // 每个栏目对应的id

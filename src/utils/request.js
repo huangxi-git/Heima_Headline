@@ -26,9 +26,18 @@ axios.interceptors.request.use(function (config) {
 
 // 添加响应拦截器
 axios.interceptors.response.use(function (response) {
-    if (response.data.message == '用户信息验证失败！' || response.data.message == '用户信息验证失败') {
+    if (response.data.message == '用户信息验证失败！' ||
+        response.data.message == '用户信息验证失败') {
         console.log('用户信息验证失败！');
-        window.location.href = '#/login';
+        // console.log('当前页面地址：', window.location.href);
+
+        // 必须是 hash 模式才能获取到
+        // console.log('当前页面路由地址：', window.location.hash);
+
+        // 传递当前页面地址 -- 传参 -- 实现跳回到原来页面 
+        // 未登录时，点击关注、个人页面时，会自动跳到登录页，登录后返回原来跳转出去时的页面
+        window.location.href = '#/login?redirect_url=' + window.location.href;
+
     }
     // 对响应数据做点什么
     return response;

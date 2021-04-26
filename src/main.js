@@ -18,6 +18,8 @@ import {
   Tabs,
   List,
   PullRefresh,
+  SwipeCell,
+  Button
 } from 'vant';
 
 // 将组件挂载到全局，这样在每个组件中可以通过this 进行使用
@@ -30,7 +32,9 @@ Vue.use(Toast)
   .use(Tab)
   .use(Tabs)
   .use(List)
-  .use(PullRefresh);
+  .use(PullRefresh)
+  .use(SwipeCell)
+  .use(Button);
 
 
 

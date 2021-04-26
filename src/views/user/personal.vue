@@ -1,5 +1,13 @@
 <template>
   <div class="personal">
+    <!-- 头部 -->
+    <hmHeader title="个人中心">
+      <template #left>
+        <van-icon name="arrow-left" @click="$router.go(-1)" />
+      </template>
+      <template #right> </template>
+    </hmHeader>
+    <!-- 主要内容 -->
     <router-link :to="'/edit_profile/' + id">
       <div class="profile">
         <img :src="userInfo.head_img" alt />
@@ -18,9 +26,17 @@
         <span class="iconfont iconjiantou1"></span>
       </div>
     </router-link>
-    <hm_cell desc="关注的用户" title="我的关注"></hm_cell>
+    <hm_cell
+      desc="关注的用户"
+      title="我的关注"
+      @click.native="$router.push({ path: '/myfollow' })"
+    ></hm_cell>
     <hm_cell desc="跟帖/回复" title="我的跟帖"></hm_cell>
-    <hm_cell desc="文章/视频" title="我的收藏"></hm_cell>
+    <hm_cell
+      desc="文章/视频"
+      title="我的收藏"
+      @click.native="$router.push({ path: '/myStar' })"
+    ></hm_cell>
     <hm_cell desc="" title="设置"></hm_cell>
     <hm_button type="danger" style="margin: 20px auto" @click="exitLogin"
       >退出</hm_button
@@ -36,13 +52,14 @@ import hm_button from "../../components/heima_button";
 import { getUserDetail } from "../../apis/user";
 // 引入 axios
 import axios from "../../utils/request";
+import hmHeader from "../../components/hm_header";
 
 export default {
   // 事件处理函数
   methods: {
+    // 点击退出登录
     exitLogin() {
-      // this.$toast("你将退出登录");
-      confirm("你将退出登录");
+      this.$toast("你将退出登录");
       // 移除token
       localStorage.removeItem("heimatoutiao_loginToken");
       // 跳转页面
@@ -53,6 +70,7 @@ export default {
   components: {
     hm_cell,
     hm_button,
+    hmHeader,
   },
   // 钩子函数
   mounted() {

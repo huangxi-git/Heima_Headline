@@ -103,7 +103,7 @@ export default {
     // console.log(this.userinfo);
     getUserDetail(this.$route.params.id)
       .then((res) => {
-        console.log("钩子函数：", res);
+        // console.log("钩子函数：", res);
         this.userinfo = res.data.data;
         // 渲染头像
         this.userinfo.head_img =

@@ -2,39 +2,111 @@
   <div class="comment">
     <div class="addcomment" v-show="!isFocus">
       <input type="text" placeholder="写跟帖" @click="isFocus = !isFocus" />
-      <span class="comment">
+      <span
+        class="comment"
+        @click="$router.push({ path: `/comment/${post.id}` })"
+      >
         <i class="iconfont iconpinglun-"></i>
         <em>{{ post.comment_length }}</em>
       </span>
-      <i class="iconfont iconshoucang" :class="{ active: post.has_star }"></i>
+      <!-- 收藏 -->
+      <i
+        class="iconfont iconshoucang"
+        @click="starThisPost"
+        :class="{ active: post.has_star }"
+      ></i>
+      <!-- 分享 -->
       <i class="iconfont iconfenxiang"></i>
     </div>
     <div class="inputcomment" v-show="isFocus">
-      <textarea ref="commtext" rows="5"></textarea>
+      <textarea ref="commtext" rows="5" v-model.trim="content"></textarea>
       <div>
-        <span @click="lalal">发 送</span>
-        <span @click="isFocus = !isFocus">取 消</span>
+        <span @click="sendComment">发 送</span>
+        <span @click="cancelReplay">取 消</span>
       </div>
     </div>
   </div>
 </template>
 
 <script>
+import { starPost, publishComment } from "../apis/post";
+
 export default {
   props: {
     post: {
       type: Object,
       required: true,
     },
+    commentObj: {
+      type: Object,
+      default: null,
+    },
+  },
+  // 监听
+  watch: {
+    // 有数据传过来 -- 监听变化
+    commentObj() {
+      if (this.commentObj) {
+        this.isFocus = true;
+      }
+    },
   },
   data() {
     return {
       isFocus: false,
+      // 输入框内容
+      content: "",
     };
   },
+  mounted() {
+    // console.log(this.post);
+  },
   methods: {
-    lalal() {
-      console.log(this.post);
+    // 点击取消按钮
+    cancelReplay() {
+      // console.log(99999);
+      // 关闭输入框
+      this.isFocus = !this.isFocus;
+      // 清空输入框
+      this.content = "";
+      // 子传父
+      this.$emit("cancel");
+    },
+    // 收藏
+    async starThisPost() {
+      // console.log(this.post);
+      // 发送请求
+      let res = await starPost(this.post.id);
+      // console.log(res);
+      this.$toast(res.data.message);
+      this.post.has_star = !this.post.has_star;
+    },
+
+    // 发表文章
+    async sendComment() {
+      if (this.content.length == 0) {
+        this.$toast.fail("请输入评论内容");
+        return;
+      }
+      // 请求要传的参数
+      let data = {
+        content: this.content,
+      };
+      // 判断是否传入了评论对象
+      if (this.commentObj) {
+        data.parent_id = this.commentObj.id;
+      }
+      // 发送请求
+      let res = await publishComment(this.post.id, data);
+      // console.log(res);
+      // 清空输入框
+      this.content = "";
+      // 关闭输入框
+      this.isFocus = false;
+      // 给提示
+      this.$toast(res.data.message);
+      // 页面内容的刷新-子组件要告诉父组件进行列表数据的刷新
+      this.$emit("refresh");
     },
   },
 };
@@ -46,6 +118,7 @@ export default {
   position: fixed;
   left: 0;
   bottom: 0;
+  border-bottom: crimson 1px solid;
 }
 .inputcomment {
   padding: 10px;

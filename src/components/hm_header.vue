@@ -5,7 +5,7 @@
     </div>
     <div class="center">{{ title }}</div>
     <div class="right">
-      <slot name="right">右</slot>
+      <slot name="right"></slot>
     </div>
   </div>
 </template>

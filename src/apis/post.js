@@ -25,3 +25,31 @@ export const likePost = (id) => {
         url: '/post_like/' + id,
     })
 }
+
+// 收藏
+export const starPost = (id) => {
+    return axios({
+        url: '/post_star/' + id,
+    })
+}
+
+
+// 评论
+export const getPostComment = (id, params) => {
+    return axios({
+        url: '/post_comment/' + id,
+        params: {
+            pageSize: 50
+        }
+    })
+}
+
+
+// 评论
+export const publishComment = (id, data) => {
+    return axios({
+        method: 'post',
+        url: `/post_comment/${id}`,
+        data
+    })
+}

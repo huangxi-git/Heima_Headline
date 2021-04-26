@@ -80,9 +80,22 @@ export default {
               "heimatoutiao_loginToken",
               res.data.data.token
             );
+            // 保存 id 到本地
+            localStorage.setItem("heimatoutiao_loginId", res.data.data.user.id);
             this.$toast.success("登录成功！");
-            // 登录成功后跳转页面
-            this.$router.push({ path: `/personal/${res.data.data.user.id}` });
+
+            // 如果之前传递的回跳路径，就回跳
+            let redirect = location.href.split("=")[1];
+            // console.log(redirect);
+            // 传了 路径
+            if (redirect) {
+              // 解码 -- %
+              location.href = decodeURIComponent(redirect);
+              // location.href = redirect;
+            } else {
+              // 登录成功后跳转页面
+              this.$router.push({ path: `/personal/${res.data.data.user.id}` });
+            }
           })
           .catch((err) => {
             // console.log(err);

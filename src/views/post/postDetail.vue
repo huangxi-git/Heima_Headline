@@ -2,8 +2,13 @@
   <div class="articaldetail">
     <div class="header">
       <div class="left">
+        <!-- 返回上一页 -->
         <van-icon name="arrow-left back" @click="$router.back()" />
-        <span class="iconfont iconnew new"></span>
+        <!-- 返回主页 -->
+        <span
+          class="iconfont iconnew new"
+          @click="$router.push({ name: 'index' })"
+        ></span>
       </div>
       <span @click="followUserById" :class="{ active: post.has_follow }">{{
         post.has_follow == false ? "关注" : "已关注"
@@ -105,8 +110,8 @@ export default {
       // 拿到文章 id
       // 发送请求
       let res = await likePost(this.post.id);
-      console.log(this.post);
-      console.log(res);
+      // console.log(this.post);
+      // console.log(res);
 
       if (res.data.message == "点赞成功") {
         ++this.post.like_length;

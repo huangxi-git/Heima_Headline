@@ -51,6 +51,24 @@ const router = new VueRouter({
             path: '/postDetail/:id',
             component: () => import('../views/post/postDetail.vue'),
         },
+        // 我的关注
+        {
+            name: 'myfollow',
+            path: '/myfollow',
+            component: () => import('../views/user/myfollow.vue'),
+        },
+        // 我的收藏
+        {
+            name: 'myStar',
+            path: '/myStar',
+            component: () => import('../views/user/myStar.vue'),
+        },
+        // 我的收藏
+        {
+            name: 'comment',
+            path: '/comment/:id',
+            component: () => import('../views/comment.vue'),
+        },
 
     ],
 });
