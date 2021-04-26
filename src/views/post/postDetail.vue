@@ -18,6 +18,8 @@
       <!-- 显示文章 -->
       <div class="content" v-html="post.content" v-if="post.type == 1"></div>
       <!-- 显示视频 -->
+      <!-- http://pic1.win4000.com/wallpaper/2017-11-17/5a0e7021912fc.jpg -->
+      <!-- https://wallpaperm.cmcm.com/884126cf69eb8d545955dbd8c6c04d8e.jpg -->
       <video
         :src="post.content"
         poster="http://pic1.win4000.com/wallpaper/2017-11-17/5a0e7021912fc.jpg"
