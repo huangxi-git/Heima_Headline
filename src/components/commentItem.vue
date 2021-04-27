@@ -4,6 +4,7 @@
     <hmCommentItm
       v-if="parentItem.parent"
       :parentItem="parentItem.parent"
+      @replayChild="handlerReplay(parentItem)"
     ></hmCommentItm>
     <!-- 内容 -->
     <div class="top">
@@ -12,7 +13,7 @@
         <span>{{ parentItem.user.nickname }}</span> &nbsp;&nbsp;&nbsp;
         <!-- <span>2分钟前</span> -->
       </div>
-      <span>回复</span>
+      <span @click="handlerReplay(parentItem)">回复</span>
     </div>
     <div class="bottom">{{ parentItem.content }}</div>
   </div>
@@ -33,6 +34,13 @@ export default {
   props: {
     parentItem: {
       type: Object,
+    },
+  },
+  methods: {
+    // 点击回复
+    handlerReplay(value) {
+      // console.log(value);
+      this.$emit("replayChild", value);
     },
   },
 };

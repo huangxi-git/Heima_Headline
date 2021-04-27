@@ -69,6 +69,12 @@ const router = new VueRouter({
             path: '/comment/:id',
             component: () => import('../views/comment.vue'),
         },
+        // 栏目管理
+        {
+            name: 'cateManager',
+            path: '/cateManager',
+            component: () => import('../views/cateManager.vue'),
+        },
 
     ],
 });
@@ -76,8 +82,9 @@ const router = new VueRouter({
 // 导航守卫    to.path.indexOf('/personal/') !== -1
 // to: 目标路由对象，里面有path 就是目标路由地址
 router.beforeEach((to, from, next) => {
+    let arr = ['personal', 'cateManager', 'edit_profile'];
     // 只判断是否去 /personal 路由 -- 判断带参
-    if (to.path.indexOf('/personal/') !== -1) {
+    if (arr.indexOf(to.name) !== -1) {
         // 拿到token
         let token = localStorage.getItem('heimatoutiao_loginToken');
         if (token) {
@@ -85,7 +92,8 @@ router.beforeEach((to, from, next) => {
         } else {
             Toast('未登录，请先登录');
             // 重定向到登录
-            next({ name: 'login' });
+            next({ path: '/login?redirect_url=' + from.path });
+            // console.log('from:', from.path);
         }
     } else {
         next();

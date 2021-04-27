@@ -49,7 +49,7 @@ export default {
     return {
       // 用户输入框
       user: {
-        username: "19123456789",
+        username: "19123456788",
         password: "zxcvbnm",
       },
     };

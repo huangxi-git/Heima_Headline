@@ -21,6 +21,7 @@
       <hmCommentItem
         v-if="value.parent"
         :parentItem="value.parent"
+        @replayChild="replayComment"
       ></hmCommentItem>
       <!-- 评论内容 -->
       <div class="text">{{ value.content }}</div>

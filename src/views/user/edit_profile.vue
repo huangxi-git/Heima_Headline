@@ -156,7 +156,7 @@ export default {
     editNickname() {
       updateUserInfo(this.$route.params.id, { nickname: this.nickname })
         .then((res) => {
-          console.log(res);
+          // console.log(res);
           this.userinfo.nickname = res.data.data.nickname;
         })
         .catch((err) => {

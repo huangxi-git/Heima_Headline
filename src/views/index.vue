@@ -70,11 +70,44 @@ export default {
     };
   },
   async mounted() {
-    // 获取栏目
-    let res = await getCateList();
-    // console.log(res.data);
-    this.cateList = res.data.data;
-    this.$toast("栏目渲染成功");
+    // 点击伪元素 ‘ + ’
+    document.querySelector(".van-sticky").onclick = (e) => {
+      // console.log(e.target.className);
+      // 判断是否点击 .van-sticky
+      if (e.target.className == "van-sticky") {
+        // console.log(true);
+        // 跳转页面
+        this.$router.push({ path: "/cateManager" }).catch((err) => {
+          // console.log(err);
+          // console.log(9999999);
+        });
+      }
+    };
+
+    // 首页加载完后，先读取本地的栏目数据
+    this.cateList = JSON.parse(
+      localStorage.getItem("heimatoutiao_removeCate") || "[]"
+    );
+
+    if (this.cateList.length == 0) {
+      // 获取栏目
+      let res = await getCateList();
+      // console.log(res.data);
+      this.cateList = res.data.data;
+      this.$toast("栏目渲染成功");
+    }
+    // 本地有存储栏目，需要手动添加 关注、头条
+    else {
+      // 判断是否登录
+      if (localStorage.getItem("heimatoutiao_loginToken")) {
+        this.cateList.unshift(
+          { id: 0, name: "关注", is_top: 1 },
+          { id: 999, name: "头条", is_top: 1 }
+        );
+      } else {
+        this.cateList.unshift({ id: 999, name: "头条", is_top: 1 });
+      }
+    }
 
     // 数据改造 -- 重点 -- 为每个栏目加 postlist、pageIndex、pageSize
     this.cateList = this.cateList.map((v) => {
@@ -214,6 +247,21 @@ export default {
       color: #fff;
       font-size: 20px;
     }
+  }
+}
+/deep/ .van-sticky {
+  padding-right: 44px;
+  background-color: rgb(241, 240, 240);
+  &::before {
+    content: "+";
+    position: absolute;
+    width: 44px;
+    height: 44px;
+    line-height: 38px;
+    top: 0;
+    right: 0;
+    font-size: 30px;
+    text-align: center;
   }
 }
 </style>
