@@ -50,11 +50,9 @@ export default {
   },
   async mounted() {
     // 先读取本地数据
-    this.cateList = JSON.parse(
-      localStorage.getItem("heimatoutiao_removeCate") || "[]"
-    );
+    this.cateList = JSON.parse(localStorage.getItem("heimatoutiao_removeCate"));
     // 判断有没有本地存储
-    if (this.cateList.length == 0) {
+    if (!this.cateList) {
       let res = await getCateList();
       // console.log(res);
       this.cateList = res.data.data;

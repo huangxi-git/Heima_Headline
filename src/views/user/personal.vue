@@ -63,7 +63,7 @@ export default {
       // 移除token
       localStorage.removeItem("heimatoutiao_loginToken");
       // 跳转页面
-      this.$router.push({ path: "/login" });
+      this.$router.push({ path: "/index" });
     },
   },
   // 注册组件

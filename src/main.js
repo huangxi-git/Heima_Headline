@@ -19,7 +19,8 @@ import {
   List,
   PullRefresh,
   SwipeCell,
-  Button
+  Button,
+  Search
 } from 'vant';
 
 // 将组件挂载到全局，这样在每个组件中可以通过this 进行使用
@@ -34,7 +35,8 @@ Vue.use(Toast)
   .use(List)
   .use(PullRefresh)
   .use(SwipeCell)
-  .use(Button);
+  .use(Button)
+  .use(Search);
 
 
 

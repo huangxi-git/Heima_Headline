@@ -75,6 +75,12 @@ const router = new VueRouter({
             path: '/cateManager',
             component: () => import('../views/cateManager.vue'),
         },
+        // 栏目管理
+        {
+            name: 'search',
+            path: '/search',
+            component: () => import('../views/search.vue'),
+        },
 
     ],
 });
@@ -83,7 +89,6 @@ const router = new VueRouter({
 // to: 目标路由对象，里面有path 就是目标路由地址
 router.beforeEach((to, from, next) => {
     let arr = ['personal', 'cateManager', 'edit_profile'];
-    // 只判断是否去 /personal 路由 -- 判断带参
     if (arr.indexOf(to.name) !== -1) {
         // 拿到token
         let token = localStorage.getItem('heimatoutiao_loginToken');

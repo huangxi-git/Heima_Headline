@@ -5,7 +5,7 @@
       <div class="logo">
         <span class="iconfont iconnew"></span>
       </div>
-      <div class="search">
+      <div class="search" @click="$router.push({ path: '/search' })">
         <van-icon name="search" />
         <span>搜索商品</span>
       </div>
@@ -74,7 +74,7 @@ export default {
     document.querySelector(".van-sticky").onclick = (e) => {
       // console.log(e.target.className);
       // 判断是否点击 .van-sticky
-      if (e.target.className == "van-sticky") {
+      if (e.target.className.indexOf("van-sticky") !== -1) {
         // console.log(true);
         // 跳转页面
         this.$router.push({ path: "/cateManager" }).catch((err) => {
